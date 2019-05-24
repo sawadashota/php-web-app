@@ -1,4 +1,4 @@
-FROM php:7.3.3
+FROM php:7.3.4
 
 ENV APP_DIR /var/www/html
 ENV HOME /home/app
