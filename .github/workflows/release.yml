@@ -1,0 +1,33 @@
+name: Release An Image
+
+on:
+  push:
+    branches:
+    - "!*"
+    tags:
+    - "v*"
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Build the Docker image
+      run: docker build . --file Dockerfile --tag quay.io/repository/shota_sawada/php-web-app:latest
+
+    - name: Login to Quay.io
+      env:
+        DOCKER_USER: ${{ secrets.DOCKER_USER }}
+        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
+      run: docker login -u="${DOCKER_USER}" -p="${DOCKER_PASSWORD}" quay.io
+
+    - name: Push Docker image
+      run: |
+        tag=$(git describe --exact-match --tags $(git log -n1 --pretty='%h'))
+        docker tag quay.io/repository/shota_sawada/php-web-app:latest quay.io/repository/shota_sawada/php-web-app:${tag}
+        docker push quay.io/repository/shota_sawada/php-web-app:latest
+        docker push quay.io/repository/shota_sawada/php-web-app:${tag}
+
