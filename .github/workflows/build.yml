@@ -18,5 +18,5 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag quay.io/repository/shota_sawada/php-web-app:latest
+      run: docker build . --file Dockerfile --tag quay.io/shota_sawada/php-web-app:latest
 
