@@ -16,7 +16,7 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag quay.io/repository/shota_sawada/php-web-app:latest
+      run: docker build . --file Dockerfile --tag quay.io/shota_sawada/php-web-app:latest
 
     - name: Login to Quay.io
       env:
@@ -27,7 +27,7 @@ jobs:
     - name: Push Docker image
       run: |
         tag=$(git describe --exact-match --tags $(git log -n1 --pretty='%h'))
-        docker tag quay.io/repository/shota_sawada/php-web-app:latest quay.io/repository/shota_sawada/php-web-app:${tag}
-        docker push quay.io/repository/shota_sawada/php-web-app:latest
-        docker push quay.io/repository/shota_sawada/php-web-app:${tag}
+        docker tag quay.io/shota_sawada/php-web-app:latest quay.io/shota_sawada/php-web-app:${tag}
+        docker push quay.io/shota_sawada/php-web-app:latest
+        docker push quay.io/shota_sawada/php-web-app:${tag}
 
