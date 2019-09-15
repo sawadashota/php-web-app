@@ -16,18 +16,33 @@ jobs:
     steps:
     - uses: actions/checkout@v1
     - name: Build the Docker image
-      run: docker build . --file Dockerfile --tag quay.io/shota_sawada/php-web-app:latest
+      run: docker build . --file Dockerfile --tag php-web-app:latest
+
+    - name: Login to DockerHub
+      env:
+        DOCKER_HUB_USER: ${{ secrets.DOCKER_HUB_USER }}
+        DOCKER_HUB_PASSWORD: ${{ secrets.DOCKER_HUB_PASSWORD }}
+      run: docker login -u="${DOCKER_HUB_USER}" -p="${DOCKER_HUB_PASSWORD}"
+
+    - name: Push to DockerHub
+      run: |
+        tag=$(git describe --exact-match --tags $(git log -n1 --pretty='%h'))
+        docker tag php-web-app:latest sawadashota/php-web-app:latest
+        docker tag php-web-app:latest sawadashota/php-web-app:${tag}
+        docker push sawadashota/php-web-app:latest
+        docker push sawadashota/php-web-app:${tag}
 
     - name: Login to Quay.io
       env:
-        DOCKER_USER: ${{ secrets.DOCKER_USER }}
-        DOCKER_PASSWORD: ${{ secrets.DOCKER_PASSWORD }}
-      run: docker login -u="${DOCKER_USER}" -p="${DOCKER_PASSWORD}" quay.io
+        QUAY_IO_USER: ${{ secrets.QUAY_IO_USER }}
+        QUAY_IO_PASSWORD: ${{ secrets.QUAY_IO_PASSWORD }}
+      run: docker login -u="${QUAY_IO_USER}" -p="${QUAY_IO_PASSWORD}" quay.io
 
-    - name: Push Docker image
+    - name: Push to Quay.io
       run: |
         tag=$(git describe --exact-match --tags $(git log -n1 --pretty='%h'))
-        docker tag quay.io/shota_sawada/php-web-app:latest quay.io/shota_sawada/php-web-app:${tag}
+        docker tag php-web-app:latest quay.io/shota_sawada/php-web-app:latest
+        docker tag php-web-app:latest quay.io/shota_sawada/php-web-app:${tag}
         docker push quay.io/shota_sawada/php-web-app:latest
         docker push quay.io/shota_sawada/php-web-app:${tag}
 
