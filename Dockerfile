@@ -1,4 +1,4 @@
-FROM php:7.4.5-buster
+FROM php:7.4.6-buster
 
 ENV APP_DIR /var/www/html
 ENV HOME /home/app
